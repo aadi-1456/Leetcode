@@ -1,35 +1,37 @@
-#include <vector>
-
-using namespace std;
+#include <bits/stdc++.h>
 
 class Solution {
 public:
-    int findCircleNum(vector<vector<int>>& isConnected) {
-        int n = isConnected.size();
-        vector<bool> visited(n, false);
-        int provinces = 0;
+    void bfs(int node, vector<vector<int>>& isConnected,vector<int>& visited){
+        visited[node]=1;
+        queue<int> q;
+        q.push(node);
 
-        for (int i = 0; i < n; ++i) {
-            if (!visited[i]) {
-                provinces++;
-                queue<int> q;
-                q.push(i);
-                visited[i] = true;
+        while(!q.empty()){
+            int first=q.front();
+            q.pop();
 
-                while (!q.empty()) {
-                    int city = q.front();
-                    q.pop();
-
-                    for (int j = 0; j < n; ++j) {
-                        if (isConnected[city][j] == 1 && !visited[j]) {
-                            visited[j] = true;
-                            q.push(j);
-                        }
-                    }
+            for(int i=0;i<isConnected.size();i++){
+                if(visited[i]!=1 && isConnected[first][i]==1){
+                    visited[i]=1;
+                    q.push(i);
                 }
             }
         }
+    }
 
-        return provinces;
+
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        int n=isConnected.size();
+        vector<int> visited(n,0);
+
+        int totalProvinces=0;
+        for(int i=0;i<n;i++){
+            if(visited[i]!=1){
+                totalProvinces++;
+                bfs(i,isConnected,visited);
+            }
+        }
+        return totalProvinces;
     }
 };
